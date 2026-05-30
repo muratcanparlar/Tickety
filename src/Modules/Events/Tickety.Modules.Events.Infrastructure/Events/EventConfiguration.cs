@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Tickety.Modules.Events.Domain.Event;
+using Tickety.Modules.Events.Domain.Events;
 
 namespace Tickety.Modules.Events.Infrastructure.Events;
 

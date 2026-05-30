@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Tickety.Modules.Events.Application.Persistence;
-using Tickety.Modules.Events.Domain.Event;
+using Tickety.Modules.Events.Domain.Events;
 
 namespace Tickety.Modules.Events.Application.Events.CreateEvent;
 
