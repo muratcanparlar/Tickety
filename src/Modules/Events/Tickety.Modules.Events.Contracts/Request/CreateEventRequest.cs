@@ -3,6 +3,8 @@ namespace Tickety.Modules.Events.Contracts.Request;
 
 public class CreateEventRequest
 {
+    public Guid CategoryId { get; init; }
+
     public string Title { get; init; }
 
     public string Description { get; init; }

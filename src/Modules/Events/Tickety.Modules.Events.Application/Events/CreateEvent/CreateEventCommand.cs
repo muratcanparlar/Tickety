@@ -3,7 +3,8 @@ using Tickety.Modules.Events.Application.Abstraction.Messaging;
 
 namespace Tickety.Modules.Events.Application.Events.CreateEvent;
 
-public record CreateEventCommand(string Title,
+public record CreateEventCommand(Guid CategoryId, 
+    string Title,
     string Description,
     string Location,
     DateTime StartsAtUtc,

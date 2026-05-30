@@ -1,12 +1,13 @@
 ﻿using Tickety.Modules.Events.Application.Abstraction.Clock;
+using Tickety.Modules.Events.Application.Abstraction.Data;
 using Tickety.Modules.Events.Application.Abstraction.Messaging;
-using Tickety.Modules.Events.Application.Persistence;
 using Tickety.Modules.Events.Domain.Abstractions;
+using Tickety.Modules.Events.Domain.Categories;
 using Tickety.Modules.Events.Domain.Events;
 
 namespace Tickety.Modules.Events.Application.Events.CreateEvent;
 
-public class CreateEventCommandHandler(IEventsDbContext dbContext, IDateTimeProvider dateTimeProvider) : ICommandHandler<CreateEventCommand, Guid>
+public class CreateEventCommandHandler(IEventRepository eventRepository, IUnitOfWork unitOfWork, IDateTimeProvider dateTimeProvider, ICategoryRepository categoryRepository) : ICommandHandler<CreateEventCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
     {
@@ -15,7 +16,15 @@ public class CreateEventCommandHandler(IEventsDbContext dbContext, IDateTimeProv
             return Result.Failure<Guid>(EventErrors.StartDateInPast);
         }
 
+        Category? category = await categoryRepository.GetAsync(request.CategoryId, cancellationToken);
+
+        if (category is null)
+        {
+            return Result.Failure<Guid>(CategoryErrors.NotFound(request.CategoryId));
+        }
+
         Result<Event> result = Event.Create(
+            category,
             request.Title,
             request.Description,
             request.Location,
@@ -27,12 +36,10 @@ public class CreateEventCommandHandler(IEventsDbContext dbContext, IDateTimeProv
             return Result.Failure<Guid>(result.Error);
         }
 
-        var createdEvent = result.Value;
-    
-        dbContext.Events.Add(createdEvent);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        eventRepository.Insert(result.Value);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return createdEvent.Id;
+        return result.Value.Id;
     }
 
 }

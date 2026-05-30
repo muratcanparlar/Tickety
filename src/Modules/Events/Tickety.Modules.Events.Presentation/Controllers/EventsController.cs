@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tickety.Modules.Events.Application.Events.CreateEvent;
 using Tickety.Modules.Events.Contracts.Request;
@@ -15,16 +14,26 @@ public class EventsController(ISender sender) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
-        Result<Guid> result = await sender.Send(new CreateEventCommand(
-            request.Title,
-            request.Description,
-            request.Location,
-            request.StartsAtUtc,
-            request.EndsAtUtc));
+        try
+        {
+            Result<Guid> result = await sender.Send(new CreateEventCommand(
+           request.CategoryId,
+           request.Title,
+           request.Description,
+           request.Location,
+           request.StartsAtUtc,
+           request.EndsAtUtc));
 
-        return result.Match<Guid, IActionResult>(
-            id => CreatedAtAction(nameof(GetById), new { id }, new { id }),
-            r => ProblemResults.Problem(r));
+            return result.Match<Guid, IActionResult>(
+                id => CreatedAtAction(nameof(GetById), new { id }, new { id }),
+                r => ProblemResults.Problem(r));
+        }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+       
     }
 
     [HttpGet("{id:guid}")]

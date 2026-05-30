@@ -1,10 +1,12 @@
 ﻿using Tickety.Modules.Events.Domain.Abstractions;
+using Tickety.Modules.Events.Domain.Categories;
 
 namespace Tickety.Modules.Events.Domain.Events;
 
 public class Event : Entity
 {
     public Guid Id { get; set; }
+    public Guid CategoryId { get; private set; }
     public required string Title { get; set; }
     public required string Description { get; set; }
     public required string Location { get; set; }
@@ -13,14 +15,14 @@ public class Event : Entity
     public EventStatus Status { get; set; }
 
 
-
     public static Result<Event> Create(
-      
+       Category category,
        string title,
        string description,
        string location,
        DateTime startsAtUtc,
-       DateTime? endsAtUtc)
+       DateTime? endsAtUtc
+       )
     {
         if (endsAtUtc.HasValue && endsAtUtc < startsAtUtc)
         {
@@ -30,6 +32,7 @@ public class Event : Entity
         var @event = new Event
         {
             Id = Guid.NewGuid(),
+            CategoryId = category.Id,
             Title = title,
             Description = description,
             Location = location,
