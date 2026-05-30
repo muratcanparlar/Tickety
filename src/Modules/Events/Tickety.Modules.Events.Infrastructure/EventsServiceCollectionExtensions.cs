@@ -1,8 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Tickety.Modules.Events.Application.Persistence;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
+using Tickety.Modules.Events.Application.Abstraction.Clock;
+using Tickety.Modules.Events.Application.Persistence;
+using Tickety.Modules.Events.Infrastructure.Clock;
 
 namespace Tickety.Modules.Events.Infrastructure
 {
@@ -19,6 +22,8 @@ namespace Tickety.Modules.Events.Infrastructure
             {
                 throw new InvalidOperationException("Connection string for Events module was not found.");
             }
+
+            services.TryAddSingleton<IDateTimeProvider, DateTimeProvider>();
 
             services.AddSingleton(provider => new NpgsqlDataSourceBuilder(connectionString).EnableDynamicJson().Build());
 

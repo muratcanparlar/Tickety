@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tickety.Modules.Events.Application\Tickety.Modules.Events.Application.csproj" />
+    <ProjectReference Include="..\Tickety.Modules.Events.Contracts\Tickety.Modules.Events.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

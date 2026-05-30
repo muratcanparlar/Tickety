@@ -1,29 +1,38 @@
-﻿using MediatR;
+﻿using Tickety.Modules.Events.Application.Abstraction.Clock;
+using Tickety.Modules.Events.Application.Abstraction.Messaging;
 using Tickety.Modules.Events.Application.Persistence;
+using Tickety.Modules.Events.Domain.Abstractions;
 using Tickety.Modules.Events.Domain.Events;
 
 namespace Tickety.Modules.Events.Application.Events.CreateEvent;
 
-internal class CreateEventCommandHandler(IEventsDbContext dbContext) : IRequestHandler<CreateEventCommand, Guid>
+public class CreateEventCommandHandler(IEventsDbContext dbContext, IDateTimeProvider dateTimeProvider) : ICommandHandler<CreateEventCommand, Guid>
 {
-    private readonly IEventsDbContext _db = dbContext;
-
-    public async Task<Guid> Handle(CreateEventCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
     {
-        var createdEvent = new Event
+        if (request.StartsAtUtc < dateTimeProvider.UtcNow)
         {
-            Id = Guid.NewGuid(),
-            Title = request.Title,
-            Description = request.Description,
-            Location = request.Location,
-            StartsAtUtc = request.StartsAtUtc,
-            EndsAtUtc = request.EndsAtUtc,
-            Status = request.Status,
-        };
+            return Result.Failure<Guid>(EventErrors.StartDateInPast);
+        }
 
-        _db.Events.Add(createdEvent);
-        await _db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        Result<Event> result = Event.Create(
+            request.Title,
+            request.Description,
+            request.Location,
+            request.StartsAtUtc,
+            request.EndsAtUtc);
+        
+        if (result.IsFailure)
+        {
+            return Result.Failure<Guid>(result.Error);
+        }
+
+        var createdEvent = result.Value;
+    
+        dbContext.Events.Add(createdEvent);
+        await dbContext.SaveChangesAsync(cancellationToken);
 
         return createdEvent.Id;
     }
+
 }

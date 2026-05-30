@@ -1,24 +1,30 @@
-using System;
-using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tickety.Modules.Events.Application.Events.CreateEvent;
+using Tickety.Modules.Events.Contracts.Request;
+using Tickety.Modules.Events.Domain.Abstractions;
+using Tickety.Modules.Events.Presentation.ApiResults;
 
 namespace Tickety.Modules.Events.Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class EventsController : ControllerBase
+public class EventsController(ISender sender) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public EventsController(IMediator mediator) => _mediator = mediator;
-
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateEventCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateEventRequest request)
     {
-        var id = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetById), new { id }, new { id });
+        Result<Guid> result = await sender.Send(new CreateEventCommand(
+            request.Title,
+            request.Description,
+            request.Location,
+            request.StartsAtUtc,
+            request.EndsAtUtc));
+
+        return result.Match<Guid, IActionResult>(
+            id => CreatedAtAction(nameof(GetById), new { id }, new { id }),
+            r => ProblemResults.Problem(r));
     }
 
     [HttpGet("{id:guid}")]

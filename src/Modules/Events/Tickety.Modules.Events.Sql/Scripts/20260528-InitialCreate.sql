@@ -6,5 +6,5 @@ CREATE TABLE event (
     location VARCHAR(200) NOT NULL,
     starts_at_utc timestamp(6) without time zone NOT NULL,
     ends_at_utc timestamp(6) without time zone NOT NULL,
-    status VARCHAR(200) NOT NULL
+    status int NOT NULL
 );

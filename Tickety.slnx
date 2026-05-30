@@ -10,6 +10,7 @@
   <Folder Name="/src/Modules/" />
   <Folder Name="/src/Modules/Events/">
     <Project Path="src/Modules/Events/Tickety.Modules.Events.Application/Tickety.Modules.Events.Application.csproj" Id="746df65d-8d97-4a40-8c30-161a0261d15b" />
+    <Project Path="src/Modules/Events/Tickety.Modules.Events.Contracts/Tickety.Modules.Events.Contracts.csproj" Id="92c60631-af37-478d-b430-d0f232365a3e" />
     <Project Path="src/Modules/Events/Tickety.Modules.Events.Domain/Tickety.Modules.Events.Domain.csproj" Id="f69c166c-362e-48d3-b075-abeda648bbf1" />
     <Project Path="src/Modules/Events/Tickety.Modules.Events.Infrastructure/Tickety.Modules.Events.Infrastructure.csproj" Id="78bd3767-852b-4928-be79-1082cdac59cb" />
     <Project Path="src/Modules/Events/Tickety.Modules.Events.Presentation/Tickety.Modules.Events.Presentation.csproj" Id="28d53741-39ce-4c0f-9e48-2d893cc27d01" />
