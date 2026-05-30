@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  tickety.api:
+    image: ${DOCKER_REGISTRY-}ticketyapi
+    container_name: Tickety.Api
+    build:
+      context: .
+      dockerfile: src/API/Tickety.Api/Dockerfile
+    ports:
+      - 6000:8080
+      - 6001:8081
+
+  tickety.database:
+    image: postgres:latest
+    container_name: Tickety.Database
+    environment:
+      - POSTGRES_DB=tickety
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespw
+      - PGDATA=/var/lib/postgresql/data/tickety_db
+    volumes:
+      - ./.containers/tickety_postgres:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+  
+  tickety.identity:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: Tickety.Identity
+    command: start-dev #--import-realm
+    environment:
+      - KC_HEALTH_ENABLED=true
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./.containers/identity:/opt/keycloak/data
+      - ./.files:/opt/keycloak/data/import
+    ports:
+      - 18080:8080
+
+  
+
+  

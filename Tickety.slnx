@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/API/">
+    <Project Path="src/API/Tickety.Api/Tickety.Api.csproj" Id="f2291eb4-7d36-4e4e-bf1e-6cb2a533b661" />
+  </Folder>
+  <Folder Name="/src/Common/" />
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Events/">
+    <Project Path="src/Modules/Events/Tickety.Modules.Events.Application/Tickety.Modules.Events.Application.csproj" Id="746df65d-8d97-4a40-8c30-161a0261d15b" />
+    <Project Path="src/Modules/Events/Tickety.Modules.Events.Domain/Tickety.Modules.Events.Domain.csproj" Id="f69c166c-362e-48d3-b075-abeda648bbf1" />
+    <Project Path="src/Modules/Events/Tickety.Modules.Events.Infrastructure/Tickety.Modules.Events.Infrastructure.csproj" Id="78bd3767-852b-4928-be79-1082cdac59cb" />
+    <Project Path="src/Modules/Events/Tickety.Modules.Events.Presentation/Tickety.Modules.Events.Presentation.csproj" Id="28d53741-39ce-4c0f-9e48-2d893cc27d01" />
+    <Project Path="src/Modules/Events/Tickety.Modules.Events.Sql/Tickety.Modules.Events.Sql.csproj" Id="3311c8b3-32f8-4b40-b683-6ebe4aeac496" />
+  </Folder>
+</Solution>
