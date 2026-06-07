@@ -14,29 +14,22 @@ internal sealed class CreateTicketTypeCommandHandler(
 {
     public async Task<Result<Guid>> Handle(CreateTicketTypeCommand request, CancellationToken cancellationToken)
     {
-        try
+
+        Event? @event = await eventRepository.GetAsync(request.EventId, cancellationToken);
+
+        if (@event is null)
         {
-            Event? @event = await eventRepository.GetAsync(request.EventId, cancellationToken);
-
-            if (@event is null)
-            {
-                return Result.Failure<Guid>(EventErrors.NotFound(request.EventId));
-            }
-
-            var ticketType = TicketType.Create(@event, request.Name, request.Price, request.Currency, request.Quantity);
-
-            ticketTypeRepository.Insert(ticketType);
-
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-
-            return ticketType.Id;
+            return Result.Failure<Guid>(EventErrors.NotFound(request.EventId));
         }
-        catch (Exception ex)
-        {
 
-            throw ex;
-        }
-        
+        var ticketType = TicketType.Create(@event, request.Name, request.Price, request.Currency, request.Quantity);
+
+        ticketTypeRepository.Insert(ticketType);
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return ticketType.Id;
+
     }
 }
 

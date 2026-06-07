@@ -46,4 +46,16 @@ public sealed class TicketType : Entity
 
         return ticketType;
     }
+
+    public void UpdatePrice(decimal price)
+    {
+        if (Price == price)
+        {
+            return;
+        }
+
+        Price = price;
+
+        Raise(new TicketTypePriceChangedDomainEvent(Id, Price));
+    }
 }
